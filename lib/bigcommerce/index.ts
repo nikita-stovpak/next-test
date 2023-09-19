@@ -96,6 +96,7 @@ export async function bigCommerceFetch<T>({
   cache?: RequestCache;
 }): Promise<{ status: number; body: T } | never> {
   try {
+    console.log('test', endpoint);
     const result = await fetch(endpoint, {
       method: 'POST',
       headers: {
