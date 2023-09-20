@@ -36,7 +36,7 @@ export function VariantSelector({
     availableForSale: variant.availableForSale,
     // Adds key / value pairs for each variant (ie. "color": "Black" and "size": 'M").
     ...variant.selectedOptions.reduce(
-      (accumulator, option) => ({ ...accumulator, [option.name.toLowerCase()]: option.value }),
+      (accumulator, option) => ({ ...accumulator, [option?.name.toLowerCase()]: option.value }),
       {}
     )
   }));

@@ -8,16 +8,16 @@ import { useEffect, useState } from 'react';
 
 const FooterMenuItem = ({ item }: { item: Menu }) => {
   const pathname = usePathname();
-  const [active, setActive] = useState(pathname === item.path);
+  const [active, setActive] = useState(pathname === item?.path);
 
   useEffect(() => {
-    setActive(pathname === item.path);
-  }, [pathname, item.path]);
+    setActive(pathname === item?.path);
+  }, [pathname, item?.path]);
 
   return (
     <li>
       <Link
-        href={item.path}
+        href={item?.path}
         className={clsx(
           'block p-2 text-lg underline-offset-4 hover:text-black hover:underline dark:hover:text-neutral-300 md:inline-block md:text-sm',
           {
