@@ -96,7 +96,6 @@ export async function bigCommerceFetch<T>({
   cache?: RequestCache;
 }): Promise<{ status: number; body: T } | never> {
   try {
-    console.log('test', endpoint);
     const result = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -591,13 +590,18 @@ export async function getMenu(handle: string): Promise<VercelMenu[]> {
 }
 
 export async function getPage(handle: string): Promise<VercelPage> {
+  console.log('handle', handle);
+
   const entityId = await getEntityIdByHandle(handle);
+  console.log('entityId', entityId);
   const res = await bigCommerceFetch<BigCommercePageOperation>({
     query: getPageQuery,
     variables: {
-      entityId: entityId || 1
+      entityId: entityId || 6
     }
   });
+
+  console.log('res.body.data.site.content.page', res.body.data.site.content.page);
 
   return bigCommerceToVercelPageContent(res.body.data.site.content.page);
 }
@@ -608,6 +612,8 @@ export async function getPages(): Promise<VercelPage[]> {
   });
 
   const pagesList = res.body.data.site.content.pages.edges.map((item) => item.node);
+
+  console.log('pagesList', pagesList);
 
   return pagesList.map((page) => bigCommerceToVercelPageContent(page));
 }

@@ -326,10 +326,11 @@ export const vercelToBigCommerceSorting = (
 };
 
 export const bigCommerceToVercelPageContent = (page: BigCommercePage): VercelPage => {
+  console.log('bigCommerceToVercelPageContent', page);
   return {
     id: page?.entityId.toString(),
     title: page?.name,
-    handle: page?.path.slice(1),
+    handle: page?.path.slice(1) || `${page?.name}/`,
     body: page?.htmlBody ?? '',
     bodySummary: page?.plainTextSummary ?? '',
     seo: {
