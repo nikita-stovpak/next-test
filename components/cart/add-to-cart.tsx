@@ -25,7 +25,7 @@ export function AddToCart({
   const defaultProductId = variants.length === 1 ? variants[0]?.parentId : undefined;
   const variant = variants.find((variant: ProductVariant) =>
     variant.selectedOptions.every(
-      (option) => option.value === searchParams.get(option.name.toLowerCase())
+      (option) => option.value === searchParams.get(option?.name.toLowerCase())
     )
   );
   const selectedVariantId = variant?.id || defaultVariantId;

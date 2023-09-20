@@ -81,7 +81,7 @@ const getEntityIdByHandle = async (entityHandle: string) => {
     }
   });
 
-  return res.body.data.site.route.node.entityId;
+  return res.body.data.site.route.node?.entityId;
 };
 
 export async function bigCommerceFetch<T>({
@@ -145,8 +145,8 @@ const getCategoryEntityIdbyHandle = async (handle: string) => {
   const recursiveFindCollectionId = (list: BigCommerceCategoryTreeItem[], slug: string): number => {
     const collectionId = list
       .flatMap((item): number | null => {
-        if (item.path.includes(slug!)) {
-          return item.entityId;
+        if (item?.path.includes(slug!)) {
+          return item?.entityId;
         }
 
         if (item.children && item.children.length) {
@@ -294,7 +294,7 @@ export async function addToCart(
   }
 
   const { productsByIdList, checkout, checkoutUrl } = await getBigCommerceProductsWithCheckout(
-    bigCommerceCart.entityId,
+    bigCommerceCart?.entityId,
     lines
   );
 
@@ -411,7 +411,7 @@ export async function getCart(cartId: string): Promise<VercelCart | undefined> {
 }
 
 export async function getCollection(handle: string): Promise<VercelCollection> {
-  const entityId = await getCategoryEntityIdbyHandle(handle);
+  const entityId = (await getCategoryEntityIdbyHandle(handle)) || 1;
   const res = await bigCommerceFetch<BigCommerceCollectionOperation>({
     query: getCategoryQuery,
     variables: {
@@ -501,7 +501,7 @@ export async function getCollections(): Promise<VercelCollection[]> {
       const res = await bigCommerceFetch<BigCommerceCollectionOperation>({
         query: getCategoryQuery,
         variables: {
-          entityId
+          entityId: entityId || 1
         }
       });
       return bigCommerceToVercelCollection(res.body.data.site.category);
@@ -512,11 +512,14 @@ export async function getCollections(): Promise<VercelCollection[]> {
 }
 
 export async function getMenu(handle: string): Promise<VercelMenu[]> {
+  console.log('test 1');
   const configureMenuPath = (path: string) =>
     path
-      .split('/')
+      ?.split('/')
       .filter((item) => item.length)
       .pop();
+  console.log('test 2');
+
   const createVercelCollectionPath = (title: string, menuType: 'footer' | 'header') =>
     menuType === 'header' ? `/search/${title}` : `/${title}`;
   const configureVercelMenu = (
@@ -592,7 +595,7 @@ export async function getPage(handle: string): Promise<VercelPage> {
   const res = await bigCommerceFetch<BigCommercePageOperation>({
     query: getPageQuery,
     variables: {
-      entityId
+      entityId: entityId || 1
     }
   });
 

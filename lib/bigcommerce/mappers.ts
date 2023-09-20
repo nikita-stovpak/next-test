@@ -37,7 +37,7 @@ const vercelFromBigCommerceLineItems = (lineItems: BigCommerceCart['lineItems'])
 const bigCommerceToVercelOptions = (options: BigCommerceProductOption[]): VercelProductOption[] => {
   return options.map((option) => {
     return {
-      id: option.entityId.toString(),
+      id: option?.entityId.toString(),
       name: option.displayName.toString(),
       values: option.values ? option.values.edges.map(({ node: value }) => value.label) : []
     };
@@ -50,7 +50,7 @@ const bigCommerceToVercelVariants = (
   return variants.map((variant) => {
     return {
       parentId: productId.toString(),
-      id: variant.entityId.toString(),
+      id: variant?.entityId.toString(),
       title: '',
       availableForSale: variant.isPurchasable,
       selectedOptions: variant.options?.edges.map(({ node: option }) => ({
@@ -89,15 +89,15 @@ const bigCommerceToVercelProduct = (product: BigCommerceProduct): VercelProduct 
   const variants = product.variants.edges.length
     ? bigCommerceToVercelVariants(
         product.variants.edges.map((item) => item.node),
-        product.entityId
+        product?.entityId || 1
       )
     : [];
 
   return {
     id: product.id.toString(),
-    handle: product.path,
+    handle: product?.path,
     availableForSale: product.availabilityV2.status === 'Available' ? true : false,
-    title: product.name,
+    title: product?.name,
     description: product.plainTextDescription || '',
     descriptionHtml: product.description ?? '',
     options,
@@ -125,7 +125,7 @@ const bigCommerceToVercelProduct = (product: BigCommerceProduct): VercelProduct 
       : [],
     featuredImage: createVercelProductImage(product.defaultImage),
     seo: {
-      title: product.seo.pageTitle || product.name,
+      title: product.seo.pageTitle || product?.name,
       description: product.seo.metaDescription || ''
     },
     tags: [product.seo.metaKeywords] || [],
@@ -199,13 +199,13 @@ const bigCommerceToVercelCartItems = (
 
         product = productData ? bigCommerceToVercelProduct(productData) : vercelProductFallback;
         selectedOptions = (item as DigitalOrPhysicalItem).selectedOptions.map((option) => ({
-          name: option.name,
+          name: option?.name,
           value: option.value || option.text || option.number?.toString() || option.fileName || ''
         }));
       }
 
       return {
-        id: item.entityId.toString(), // NOTE: used as lineId || lineItemId
+        id: item?.entityId.toString() || '1', // NOTE: used as lineId || lineItemId
         quantity: item.quantity,
         cost: {
           totalAmount: {
@@ -216,9 +216,9 @@ const bigCommerceToVercelCartItems = (
         },
         merchandise: {
           id: isCustomItem
-            ? item.entityId.toString()
+            ? item?.entityId.toString() || '1'
             : (item as DigitalOrPhysicalItem).variantEntityId!.toString(),
-          title: `${item.name}`,
+          title: `${item?.name}`,
           selectedOptions,
           product
         }
@@ -244,7 +244,7 @@ const bigCommerceToVercelCart = (
   checkoutUrl?: string
 ): VercelCart => {
   return {
-    id: cart.entityId,
+    id: cart?.entityId || '1',
     checkoutUrl: checkoutUrl ?? '',
     cost: {
       subtotalAmount: {
@@ -281,8 +281,8 @@ const bigCommerceToVercelCollection = (collection: BigCommerceCollection): Verce
   }
 
   return {
-    handle: collection.entityId.toString() || collection.name,
-    title: collection.name,
+    handle: collection?.entityId.toString() || collection?.name,
+    title: collection?.name,
     description: collection.description,
     seo: {
       title: collection.seo.pageTitle,
@@ -327,14 +327,14 @@ export const vercelToBigCommerceSorting = (
 
 export const bigCommerceToVercelPageContent = (page: BigCommercePage): VercelPage => {
   return {
-    id: page.entityId.toString(),
-    title: page.name,
-    handle: page.path.slice(1),
-    body: page.htmlBody ?? '',
-    bodySummary: page.plainTextSummary ?? '',
+    id: page?.entityId.toString(),
+    title: page?.name,
+    handle: page?.path.slice(1),
+    body: page?.htmlBody ?? '',
+    bodySummary: page?.plainTextSummary ?? '',
     seo: {
-      title: page.seo.pageTitle,
-      description: page.seo.metaDescription
+      title: page?.seo.pageTitle,
+      description: page?.seo.metaDescription
     },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
